@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#f4efe4" />
+  <title>州弈 · 区域制围棋</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">州</span>
+        <div>
+          <h1>州弈</h1>
+          <p>Winner takes the region.</p>
+        </div>
+      </div>
+      <button id="rulesButton" class="text-button">规则说明</button>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">区域制围棋实验室 · PROTOTYPE 01</p>
+          <h2>不只争地，<br /><em>还要赢下关键区域。</em></h2>
+          <p class="lede">落子规则遵循中国规则。终局时分别计算每个区域内的棋子与领地，多者独得该区域全部分值。</p>
+        </div>
+        <div class="match-chip">
+          <span class="live-dot"></span>
+          <div><strong id="matchTitle">玩家 vs AI</strong><small id="matchSubtitle">玩家执黑先行</small></div>
+        </div>
+      </section>
+
+      <section class="game-layout">
+        <aside class="panel setup-panel">
+          <div class="panel-heading">
+            <span>01</span>
+            <div><h3>对局设置</h3><p>MATCH SETUP</p></div>
+          </div>
+
+          <label class="field-label" for="boardSize">棋盘尺寸</label>
+          <div class="segmented" id="sizeOptions">
+            <button data-size="9">9 × 9</button>
+            <button data-size="13">13 × 13</button>
+            <button data-size="19" class="active">19 × 19</button>
+          </div>
+
+          <label class="field-label" for="regionPreset">区域划分</label>
+          <select id="regionPreset">
+            <option value="random" selected>随机版图</option>
+            <option value="four">四方州 · 4 区</option>
+            <option value="three">三列州 · 3 区</option>
+            <option value="center">中原州 · 5 区</option>
+            <option value="australia">澳大利亚 · 15×11 · 7 区</option>
+          </select>
+
+          <div id="randomSettings" class="random-settings">
+            <label class="field-label">区域数量</label>
+            <div class="segmented" id="densityOptions">
+              <button data-density="few">少 <small id="fewCount">4区</small></button>
+              <button data-density="standard" class="active">标准 <small id="standardCount">5区</small></button>
+              <button data-density="many">多 <small id="manyCount">7区</small></button>
+            </div>
+            <label class="field-label" for="regionStyle">边界风格</label>
+            <select id="regionStyle">
+              <option value="regular">规整</option>
+              <option value="natural" selected>自然</option>
+              <option value="complex">复杂</option>
+            </select>
+            <label class="field-label" for="mapSeed">地图种子</label>
+            <div class="seed-row">
+              <input id="mapSeed" type="text" placeholder="自动生成" maxlength="24" />
+              <button id="rerollSeed" class="secondary-button" title="换一个随机种子">↻</button>
+            </div>
+          </div>
+
+          <label class="field-label">对弈双方</label>
+          <div class="player-selects">
+            <label><span><i class="mini-stone black"></i>黑方</span><select id="blackController"><option value="human" selected>玩家</option><option value="ai">AI</option></select></label>
+            <label><span><i class="mini-stone white"></i>白方</span><select id="whiteController"><option value="human">玩家</option><option value="ai" selected>AI</option></select></label>
+          </div>
+
+          <label class="rule-toggle">
+            <input id="safeStateEnabled" type="checkbox" checked />
+            <span><strong>安全州开局</strong><small>轮流选州并进行受限布子</small></span>
+          </label>
+          <div id="safeStateOptions" class="safe-state-options">
+            <label for="safeStateCount">每方安全州</label>
+            <select id="safeStateCount"></select>
+          </div>
+
+          <label class="field-label" for="aiLevel">AI 强度</label>
+          <select id="aiLevel">
+            <option value="fast">快速</option>
+            <option value="balanced" selected>均衡</option>
+            <option value="deep">深入</option>
+          </select>
+          <p id="katagoStatus" class="ai-backend-status">KataGo · 检查中</p>
+
+          <button id="newGameButton" class="primary-button">开始新对局 <span>→</span></button>
+          <p class="setup-note">更改设置后点击开始新对局</p>
+        </aside>
+
+        <section class="board-column">
+          <div class="score-strip">
+            <div class="player active" id="blackPlayer">
+              <span class="stone black"></span>
+              <div><small>BLACK · <span id="blackRole">玩家</span></small><strong id="blackScore">0</strong></div>
+            </div>
+            <div class="turn-status">
+              <span id="moveNumber">第 1 手</span>
+              <strong id="turnLabel">轮到你落子</strong>
+            </div>
+            <div class="player" id="whitePlayer">
+              <div class="align-right"><small>WHITE · <span id="whiteRole">AI</span></small><strong id="whiteScore">0</strong></div>
+              <span class="stone white"></span>
+            </div>
+          </div>
+
+          <div class="board-frame" id="boardFrame">
+            <canvas id="goBoard" aria-label="围棋棋盘"></canvas>
+            <div id="thinkingOverlay" class="thinking-overlay hidden"><span></span> AI 正在思考</div>
+          </div>
+
+          <div class="board-actions">
+            <div class="action-group">
+              <button id="undoButton" class="secondary-button">↶ 悔棋</button>
+              <button id="highlightLastMoveButton" class="secondary-button" aria-label="高亮对方上一手">◎ 对方上一手</button>
+              <button id="recordButton" class="secondary-button">棋谱</button>
+            </div>
+            <p id="gameMessage">点击交叉点落下黑子</p>
+            <button id="passButton" class="secondary-button">停一手</button>
+          </div>
+          <div id="replayPanel" class="replay-panel hidden">
+            <div><span class="review-badge">棋谱回放</span><strong id="replayStatus">0 / 0</strong></div>
+            <div class="replay-actions">
+              <button id="replayPrev" class="secondary-button" aria-label="上一步">←</button>
+              <button id="replayPlay" class="secondary-button">自动播放</button>
+              <button id="replayNext" class="secondary-button" aria-label="下一步">→</button>
+              <button id="replayExit" class="secondary-button">退出回放</button>
+            </div>
+          </div>
+          <div id="endgamePanel" class="endgame-panel hidden">
+            <div>
+              <span class="review-badge">终局确认</span>
+              <strong>请检查死子</strong>
+              <p>点击棋盘上的棋块标记为死子，再次点击可撤销。区域比分会实时更新。</p>
+            </div>
+            <div class="endgame-actions">
+              <button id="resumeButton" class="secondary-button">恢复对局</button>
+              <button id="confirmScoreButton" class="primary-button compact">确认终局</button>
+            </div>
+          </div>
+          <div id="safePhasePanel" class="safe-phase-panel hidden">
+            <div class="safe-phase-head">
+              <span id="safePhaseBadge">安全州</span>
+              <div><strong id="safePhaseTitle">白方选择安全州</strong><p id="safePhaseMessage">点击棋盘中的一个区域完成选择</p></div>
+            </div>
+            <div class="safe-picks">
+              <div><small>黑方安全州</small><span id="blackSafeList">尚未选择</span></div>
+              <div><small>白方安全州</small><span id="whiteSafeList">尚未选择</span></div>
+            </div>
+          </div>
+          <section id="postgamePanel" class="postgame-panel hidden" aria-labelledby="postgameTitle">
+            <div class="postgame-head">
+              <div><span class="review-badge">终局复盘</span><strong id="postgameTitle">区域投入与结果</strong></div>
+              <p id="postgameLead"></p>
+            </div>
+            <div id="postgameMetrics" class="postgame-metrics"></div>
+            <div id="postgameRegions" class="postgame-regions"></div>
+          </section>
+        </section>
+
+        <aside class="panel regions-panel">
+          <div class="panel-heading">
+            <span>02</span>
+            <div><h3>区域战况</h3><p>REGION CONTROL</p></div>
+          </div>
+          <label class="overlay-toggle">
+            <span><strong>棋盘数据叠层</strong><small>显示分值与黑白占领数</small></span>
+            <input id="regionOverlayToggle" type="checkbox" checked />
+            <i aria-hidden="true"></i>
+          </label>
+          <div id="regionList" class="region-list"></div>
+          <div class="electoral-total">
+            <div><small>区域总分</small><strong><span id="blackElectoral">0</span> : <span id="whiteElectoral">0</span></strong></div>
+            <span id="totalPoints">共 100 分</span>
+          </div>
+          <div class="legend"><span><i class="black-key"></i>黑方控制</span><span><i class="white-key"></i>白方控制</span><span><i></i>胶着</span></div>
+        </aside>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="rulesDialog">
+    <button id="closeRules" class="dialog-close" aria-label="关闭">×</button>
+    <p class="eyebrow">HOW TO PLAY</p>
+    <h2>区域制计分规则</h2>
+    <ol>
+      <li><strong>落子与提子</strong><span>气、提子、禁入点与简单劫遵循标准围棋规则。</span></li>
+      <li><strong>中国式数子</strong><span>连续两次停一手后进入终局确认。标记双方认可的死子后，每个区域单独统计棋子数与围住的空点。</span></li>
+      <li><strong>赢家通吃</strong><span>区域内总数领先的一方获得该区域全部分值；平局则双方各得一半。</span></li>
+      <li><strong>安全州开局</strong><span>启用后白方先选州，双方轮流选满安全州；之后黑白依次在各自选定区域各下一手，再进入自由对弈。</span></li>
+    </ol>
+    <button id="rulesGotIt" class="primary-button">明白了</button>
+  </dialog>
+
+  <dialog id="recordDialog" class="record-dialog">
+    <button id="closeRecord" class="dialog-close" aria-label="关闭">×</button>
+    <p class="eyebrow">MATCH RECORD</p>
+    <h2>棋谱导入与导出</h2>
+    <p class="dialog-intro">棋谱包含完整版图、开局设置和全部操作，可用于精确复盘。</p>
+    <textarea id="recordText" spellcheck="false" aria-label="棋谱 JSON"></textarea>
+    <p id="recordError" class="record-error" aria-live="polite"></p>
+    <div class="record-actions">
+      <button id="recordRefresh" class="secondary-button">载入当前棋谱</button>
+      <button id="recordDownload" class="secondary-button">下载 JSON</button>
+      <button id="recordLoad" class="primary-button compact">导入并回放</button>
+    </div>
+  </dialog>
+
+  <script type="module" src="src/app.js"></script>
+</body>
+</html>

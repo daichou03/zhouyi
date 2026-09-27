@@ -1,0 +1,821 @@
+{
+  "generatedAt": "2026-09-26T15:40:36.430Z",
+  "endpoint": "http://localhost:5173/api/katago/analyze",
+  "total": 10,
+  "builtinPassed": 10,
+  "katagoPassed": 3,
+  "finalPassed": 10,
+  "rows": [
+    {
+      "id": "capture-single",
+      "title": "中央提一子",
+      "category": "立即提吃",
+      "elapsedMs": 55,
+      "analysisError": null,
+      "expected": [
+        "E4"
+      ],
+      "avoid": [],
+      "builtin": {
+        "move": "E4",
+        "ok": true,
+        "reason": "通过"
+      },
+      "katago": {
+        "move": "E3",
+        "ok": false,
+        "reason": "未命中预期着"
+      },
+      "final": {
+        "move": "E4",
+        "ok": true,
+        "reason": "通过"
+      },
+      "builtinTop": [
+        {
+          "move": "E4",
+          "score": 25.91,
+          "captured": 1,
+          "saved": 0
+        },
+        {
+          "move": "D6",
+          "score": 4.71,
+          "captured": 0,
+          "saved": 0
+        },
+        {
+          "move": "F6",
+          "score": 4.71,
+          "captured": 0,
+          "saved": 0
+        },
+        {
+          "move": "A9",
+          "score": 2.61,
+          "captured": 0,
+          "saved": 0
+        },
+        {
+          "move": "B9",
+          "score": 2.61,
+          "captured": 0,
+          "saved": 0
+        }
+      ],
+      "katagoTop": [
+        {
+          "move": "E3",
+          "policy": 0.21722
+        },
+        {
+          "move": "F3",
+          "policy": 0.16655
+        },
+        {
+          "move": "E4",
+          "policy": 0.13593
+        },
+        {
+          "move": "G3",
+          "policy": 0.09639
+        },
+        {
+          "move": "D3",
+          "policy": 0.07121
+        }
+      ],
+      "classification": "内置已通过"
+    },
+    {
+      "id": "save-single",
+      "title": "中央救单子",
+      "category": "紧急救棋",
+      "elapsedMs": 14,
+      "analysisError": null,
+      "expected": [
+        "E4"
+      ],
+      "avoid": [],
+      "builtin": {
+        "move": "E4",
+        "ok": true,
+        "reason": "通过"
+      },
+      "katago": {
+        "move": "E4",
+        "ok": true,
+        "reason": "通过"
+      },
+      "final": {
+        "move": "E4",
+        "ok": true,
+        "reason": "通过"
+      },
+      "builtinTop": [
+        {
+          "move": "E4",
+          "score": 21.91,
+          "captured": 0,
+          "saved": 1
+        },
+        {
+          "move": "D6",
+          "score": 4.11,
+          "captured": 0,
+          "saved": 0
+        },
+        {
+          "move": "F6",
+          "score": 4.11,
+          "captured": 0,
+          "saved": 0
+        },
+        {
+          "move": "A9",
+          "score": 2.61,
+          "captured": 0,
+          "saved": 0
+        },
+        {
+          "move": "B9",
+          "score": 2.61,
+          "captured": 0,
+          "saved": 0
+        }
+      ],
+      "katagoTop": [
+        {
+          "move": "E4",
+          "policy": 0.65939
+        },
+        {
+          "move": "C3",
+          "policy": 0.03114
+        },
+        {
+          "move": "G3",
+          "policy": 0.02797
+        },
+        {
+          "move": "E3",
+          "policy": 0.02711
+        },
+        {
+          "move": "D3",
+          "policy": 0.02567
+        }
+      ],
+      "classification": "内置已通过"
+    },
+    {
+      "id": "capture-chain",
+      "title": "提取两子长链",
+      "category": "立即提吃",
+      "elapsedMs": 20,
+      "analysisError": null,
+      "expected": [
+        "F4"
+      ],
+      "avoid": [],
+      "builtin": {
+        "move": "F4",
+        "ok": true,
+        "reason": "通过"
+      },
+      "katago": {
+        "move": "C3",
+        "ok": false,
+        "reason": "未命中预期着"
+      },
+      "final": {
+        "move": "F4",
+        "ok": true,
+        "reason": "通过"
+      },
+      "builtinTop": [
+        {
+          "move": "F4",
+          "score": 49.91,
+          "captured": 2,
+          "saved": 0
+        },
+        {
+          "move": "G6",
+          "score": 5.41,
+          "captured": 0,
+          "saved": 0
+        },
+        {
+          "move": "D6",
+          "score": 4.71,
+          "captured": 0,
+          "saved": 0
+        },
+        {
+          "move": "D4",
+          "score": 4.71,
+          "captured": 0,
+          "saved": 0
+        },
+        {
+          "move": "A9",
+          "score": 2.61,
+          "captured": 0,
+          "saved": 0
+        }
+      ],
+      "katagoTop": [
+        {
+          "move": "C3",
+          "policy": 0.12393
+        },
+        {
+          "move": "E2",
+          "policy": 0.08979
+        },
+        {
+          "move": "D3",
+          "policy": 0.0765
+        },
+        {
+          "move": "B5",
+          "policy": 0.07546
+        },
+        {
+          "move": "C7",
+          "policy": 0.06898
+        }
+      ],
+      "classification": "内置已通过"
+    },
+    {
+      "id": "save-chain",
+      "title": "挽救两子长链",
+      "category": "紧急救棋",
+      "elapsedMs": 13,
+      "analysisError": null,
+      "expected": [
+        "F4"
+      ],
+      "avoid": [],
+      "builtin": {
+        "move": "F4",
+        "ok": true,
+        "reason": "通过"
+      },
+      "katago": {
+        "move": "E2",
+        "ok": false,
+        "reason": "未命中预期着"
+      },
+      "final": {
+        "move": "F4",
+        "ok": true,
+        "reason": "通过"
+      },
+      "builtinTop": [
+        {
+          "move": "F4",
+          "score": 32.01,
+          "captured": 0,
+          "saved": 2
+        },
+        {
+          "move": "G6",
+          "score": 4.81,
+          "captured": 0,
+          "saved": 0
+        },
+        {
+          "move": "D6",
+          "score": 4.11,
+          "captured": 0,
+          "saved": 0
+        },
+        {
+          "move": "D4",
+          "score": 4.11,
+          "captured": 0,
+          "saved": 0
+        },
+        {
+          "move": "A9",
+          "score": 2.61,
+          "captured": 0,
+          "saved": 0
+        }
+      ],
+      "katagoTop": [
+        {
+          "move": "E2",
+          "policy": 0.12603
+        },
+        {
+          "move": "B5",
+          "policy": 0.11209
+        },
+        {
+          "move": "C4",
+          "policy": 0.09077
+        },
+        {
+          "move": "D3",
+          "policy": 0.0754
+        },
+        {
+          "move": "D7",
+          "policy": 0.07366
+        }
+      ],
+      "classification": "内置已通过"
+    },
+    {
+      "id": "capture-corner",
+      "title": "角部提一子",
+      "category": "边角死活",
+      "elapsedMs": 20,
+      "analysisError": null,
+      "expected": [
+        "A8"
+      ],
+      "avoid": [],
+      "builtin": {
+        "move": "A8",
+        "ok": true,
+        "reason": "通过"
+      },
+      "katago": {
+        "move": "F4",
+        "ok": false,
+        "reason": "未命中预期着"
+      },
+      "final": {
+        "move": "A8",
+        "ok": true,
+        "reason": "通过"
+      },
+      "builtinTop": [
+        {
+          "move": "A8",
+          "score": 26.61,
+          "captured": 1,
+          "saved": 0
+        },
+        {
+          "move": "C9",
+          "score": 6.61,
+          "captured": 0,
+          "saved": 0
+        },
+        {
+          "move": "B8",
+          "score": 6.61,
+          "captured": 0,
+          "saved": 0
+        },
+        {
+          "move": "D9",
+          "score": 2.61,
+          "captured": 0,
+          "saved": 0
+        },
+        {
+          "move": "E9",
+          "score": 2.61,
+          "captured": 0,
+          "saved": 0
+        }
+      ],
+      "katagoTop": [
+        {
+          "move": "F4",
+          "policy": 0.09166
+        },
+        {
+          "move": "E4",
+          "policy": 0.08954
+        },
+        {
+          "move": "F5",
+          "policy": 0.08074
+        },
+        {
+          "move": "D4",
+          "policy": 0.08011
+        },
+        {
+          "move": "D3",
+          "policy": 0.07139
+        }
+      ],
+      "classification": "内置已通过"
+    },
+    {
+      "id": "capture-edge-chain",
+      "title": "边上提两子",
+      "category": "边角死活",
+      "elapsedMs": 15,
+      "analysisError": null,
+      "expected": [
+        "C8"
+      ],
+      "avoid": [],
+      "builtin": {
+        "move": "C8",
+        "ok": true,
+        "reason": "通过"
+      },
+      "katago": {
+        "move": "C8",
+        "ok": true,
+        "reason": "通过"
+      },
+      "final": {
+        "move": "C8",
+        "ok": true,
+        "reason": "通过"
+      },
+      "builtinTop": [
+        {
+          "move": "C8",
+          "score": 50.61,
+          "captured": 2,
+          "saved": 0
+        },
+        {
+          "move": "A8",
+          "score": 25.41,
+          "captured": 0,
+          "saved": 1
+        },
+        {
+          "move": "E9",
+          "score": 6.61,
+          "captured": 0,
+          "saved": 0
+        },
+        {
+          "move": "D8",
+          "score": 6.61,
+          "captured": 0,
+          "saved": 0
+        },
+        {
+          "move": "F9",
+          "score": 2.61,
+          "captured": 0,
+          "saved": 0
+        }
+      ],
+      "katagoTop": [
+        {
+          "move": "C8",
+          "policy": 0.13456
+        },
+        {
+          "move": "F4",
+          "policy": 0.09034
+        },
+        {
+          "move": "E6",
+          "policy": 0.05902
+        },
+        {
+          "move": "F6",
+          "policy": 0.05799
+        },
+        {
+          "move": "E4",
+          "policy": 0.05676
+        }
+      ],
+      "classification": "内置已通过"
+    },
+    {
+      "id": "corner-net",
+      "title": "角部两气追杀",
+      "category": "短程读取",
+      "elapsedMs": 10,
+      "analysisError": null,
+      "expected": [
+        "B9",
+        "A8"
+      ],
+      "avoid": [],
+      "builtin": {
+        "move": "B9",
+        "ok": true,
+        "reason": "通过"
+      },
+      "katago": {
+        "move": "F4",
+        "ok": false,
+        "reason": "未命中预期着"
+      },
+      "final": {
+        "move": "B9",
+        "ok": true,
+        "reason": "通过"
+      },
+      "builtinTop": [
+        {
+          "move": "B9",
+          "score": 14.61,
+          "captured": 0,
+          "saved": 0
+        },
+        {
+          "move": "A8",
+          "score": 14.61,
+          "captured": 0,
+          "saved": 0
+        },
+        {
+          "move": "C9",
+          "score": 2.61,
+          "captured": 0,
+          "saved": 0
+        },
+        {
+          "move": "D9",
+          "score": 2.61,
+          "captured": 0,
+          "saved": 0
+        },
+        {
+          "move": "E9",
+          "score": 2.61,
+          "captured": 0,
+          "saved": 0
+        }
+      ],
+      "katagoTop": [
+        {
+          "move": "F4",
+          "policy": 0.10309
+        },
+        {
+          "move": "E4",
+          "policy": 0.09703
+        },
+        {
+          "move": "F5",
+          "policy": 0.09277
+        },
+        {
+          "move": "F6",
+          "policy": 0.09133
+        },
+        {
+          "move": "G6",
+          "policy": 0.07003
+        }
+      ],
+      "classification": "内置已通过"
+    },
+    {
+      "id": "larger-capture",
+      "title": "优先提取较大棋块",
+      "category": "目标取舍",
+      "elapsedMs": 27,
+      "analysisError": null,
+      "expected": [
+        "D6"
+      ],
+      "avoid": [],
+      "builtin": {
+        "move": "D6",
+        "ok": true,
+        "reason": "通过"
+      },
+      "katago": {
+        "move": "G3",
+        "ok": false,
+        "reason": "未命中预期着"
+      },
+      "final": {
+        "move": "D6",
+        "ok": true,
+        "reason": "通过"
+      },
+      "builtinTop": [
+        {
+          "move": "D6",
+          "score": 49.91,
+          "captured": 2,
+          "saved": 0
+        },
+        {
+          "move": "G3",
+          "score": 26.61,
+          "captured": 1,
+          "saved": 0
+        },
+        {
+          "move": "B8",
+          "score": 5.41,
+          "captured": 0,
+          "saved": 0
+        },
+        {
+          "move": "E8",
+          "score": 5.41,
+          "captured": 0,
+          "saved": 0
+        },
+        {
+          "move": "B6",
+          "score": 5.41,
+          "captured": 0,
+          "saved": 0
+        }
+      ],
+      "katagoTop": [
+        {
+          "move": "G3",
+          "policy": 0.12454
+        },
+        {
+          "move": "C3",
+          "policy": 0.08272
+        },
+        {
+          "move": "D3",
+          "policy": 0.07117
+        },
+        {
+          "move": "D6",
+          "policy": 0.05346
+        },
+        {
+          "move": "D2",
+          "policy": 0.04151
+        }
+      ],
+      "classification": "内置已通过"
+    },
+    {
+      "id": "save-large-chain",
+      "title": "救大龙优先于提单子",
+      "category": "目标取舍",
+      "elapsedMs": 10,
+      "analysisError": null,
+      "expected": [
+        "E3"
+      ],
+      "avoid": [],
+      "builtin": {
+        "move": "E3",
+        "ok": true,
+        "reason": "通过"
+      },
+      "katago": {
+        "move": "G4",
+        "ok": false,
+        "reason": "未命中预期着"
+      },
+      "final": {
+        "move": "E3",
+        "ok": true,
+        "reason": "通过"
+      },
+      "builtinTop": [
+        {
+          "move": "E3",
+          "score": 49.41,
+          "captured": 0,
+          "saved": 3
+        },
+        {
+          "move": "G6",
+          "score": 26.61,
+          "captured": 1,
+          "saved": 0
+        },
+        {
+          "move": "F8",
+          "score": 5.41,
+          "captured": 0,
+          "saved": 0
+        },
+        {
+          "move": "H8",
+          "score": 5.41,
+          "captured": 0,
+          "saved": 0
+        },
+        {
+          "move": "F5",
+          "score": 4.11,
+          "captured": 0,
+          "saved": 0
+        }
+      ],
+      "katagoTop": [
+        {
+          "move": "G4",
+          "policy": 0.22528
+        },
+        {
+          "move": "H4",
+          "policy": 0.12836
+        },
+        {
+          "move": "G5",
+          "policy": 0.11461
+        },
+        {
+          "move": "H3",
+          "policy": 0.11328
+        },
+        {
+          "move": "H5",
+          "policy": 0.10056
+        }
+      ],
+      "classification": "内置已通过"
+    },
+    {
+      "id": "keep-true-eye",
+      "title": "不填自己的真眼",
+      "category": "眼形",
+      "elapsedMs": 33,
+      "analysisError": null,
+      "expected": [],
+      "avoid": [
+        "E5"
+      ],
+      "builtin": {
+        "move": "A9",
+        "ok": true,
+        "reason": "通过"
+      },
+      "katago": {
+        "move": "B5",
+        "ok": true,
+        "reason": "通过"
+      },
+      "final": {
+        "move": "B5",
+        "ok": true,
+        "reason": "通过"
+      },
+      "builtinTop": [
+        {
+          "move": "A9",
+          "score": 2.61,
+          "captured": 0,
+          "saved": 0
+        },
+        {
+          "move": "B9",
+          "score": 2.61,
+          "captured": 0,
+          "saved": 0
+        },
+        {
+          "move": "C9",
+          "score": 2.61,
+          "captured": 0,
+          "saved": 0
+        },
+        {
+          "move": "D9",
+          "score": 2.61,
+          "captured": 0,
+          "saved": 0
+        },
+        {
+          "move": "E9",
+          "score": 2.61,
+          "captured": 0,
+          "saved": 0
+        }
+      ],
+      "katagoTop": [
+        {
+          "move": "B5",
+          "policy": 0.03887
+        },
+        {
+          "move": "H6",
+          "policy": 0.03008
+        },
+        {
+          "move": "F8",
+          "policy": 0.0289
+        },
+        {
+          "move": "G7",
+          "policy": 0.0288
+        },
+        {
+          "move": "E8",
+          "policy": 0.02696
+        }
+      ],
+      "classification": "内置已通过"
+    }
+  ]
+}
