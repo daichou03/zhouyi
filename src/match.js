@@ -21,6 +21,8 @@ export class MatchState {
     this.picks = { [BLACK]: [], [WHITE]: [] };
     this.used = { [BLACK]: [], [WHITE]: [] };
     this.draftTurn = WHITE;
+    this.whiteBonus = 0;
+    this.swapCount = 0;
     this.openingRound = 0;
     this.freePlayHistoryStart = 0;
     this.deadStones = new Set();
@@ -35,11 +37,24 @@ export class MatchState {
   get enabled() { return this.safeEnabled; }
   get count() { return this.safeCount; }
   get activeColor() { return this.phase === PHASES.DRAFT ? this.draftTurn : this.game.turn; }
+  get canSwapSides() { return this.phase === PHASES.DRAFT && this.picks[BLACK].length === 0 && this.picks[WHITE].length === 0; }
   regionAt(node) { return this.regionByNode[node]; }
   safeOwner(regionIndex) {
     if (this.picks[BLACK].includes(regionIndex)) return BLACK;
     if (this.picks[WHITE].includes(regionIndex)) return WHITE;
     return EMPTY;
+  }
+
+  requestSideSwap(emit = true) {
+    if (!this.canSwapSides) return { ok: false, reason: '只能在首次选择安全州前要求换边' };
+    this.whiteBonus += 0.5;
+    this.swapCount++;
+    this.emit('swap-sides', { whiteBonus: this.whiteBonus }, emit);
+    return { ok: true, whiteBonus: this.whiteBonus };
+  }
+
+  withWhiteBonus(score) {
+    return { ...score, whiteTotal: score.whiteTotal + this.whiteBonus, whiteBonus: this.whiteBonus };
   }
 
   selectSafeRegion(regionIndex, emit = true) {
@@ -111,7 +126,7 @@ export class MatchState {
     return review;
   }
 
-  reviewScore() { return scoreRegions(this.reviewGame(), this.regions); }
+  reviewScore() { return this.withWhiteBonus(scoreRegions(this.reviewGame(), this.regions)); }
 
   toggleDeadGroup(node, emit = true) {
     if (this.phase !== PHASES.REVIEW || this.game.board[node] === EMPTY) return { ok: false, reason: '只能在终局确认时标记棋块' };

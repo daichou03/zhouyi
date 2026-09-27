@@ -29,5 +29,5 @@ export function buildPostgameSummary(score,regions,moveCounts,safePicks={}){
     return {index,name:detail.name,points:detail.points,winner,black:detail.black,white:detail.white,margin,blackMoves,whiteMoves,efficiency:winner!==EMPTY&&winnerMoves?detail.points/winnerMoves:null,tags};
   });
   const winner=score.blackTotal===score.whiteTotal?EMPTY:score.blackTotal>score.whiteTotal?BLACK:WHITE;
-  return {winner,blackTotal:score.blackTotal,whiteTotal:score.whiteTotal,blackWon,whiteWon,tied,closeRegions,highInvestmentLosses,safeTotal,safeHeld,rows};
+  return {winner,blackTotal:score.blackTotal,whiteTotal:score.whiteTotal,whiteBonus:score.whiteBonus||0,blackWon,whiteWon,tied,closeRegions,highInvestmentLosses,safeTotal,safeHeld,rows};
 }

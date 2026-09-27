@@ -11,6 +11,7 @@ assert.equal(moves[1][BLACK],0);assert.equal(moves[1][WHITE],1);
 const score={blackTotal:4,whiteTotal:6,details:[{...regions[0],black:3,white:2,winner:BLACK},{...regions[1],black:1,white:3,winner:WHITE}]};
 const summary=buildPostgameSummary(score,regions,moves,{[BLACK]:[0],[WHITE]:[1]});
 assert.equal(summary.winner,WHITE);assert.equal(summary.blackWon,1);assert.equal(summary.whiteWon,1);assert.equal(summary.closeRegions,1);assert.equal(summary.safeHeld,2);
+assert.equal(buildPostgameSummary({...score,whiteTotal:6.5,whiteBonus:.5},regions,moves,{}).whiteBonus,.5);
 assert.ok(summary.rows[0].tags.includes('安全州守住'));assert.ok(summary.rows[0].tags.includes('险胜'));
 assert.equal(summary.rows[0].efficiency,4);assert.equal(summary.rows[1].efficiency,6);
 

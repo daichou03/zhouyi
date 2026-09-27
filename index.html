@@ -162,6 +162,10 @@
               <div><small>黑方安全州</small><span id="blackSafeList">尚未选择</span></div>
               <div><small>白方安全州</small><span id="whiteSafeList">尚未选择</span></div>
             </div>
+            <div id="swapOffer" class="swap-offer hidden">
+              <span id="swapBonusLabel">白方额外分 0</span>
+              <button id="swapSidesButton" class="secondary-button">换边成为黑方 · 白方 +0.5</button>
+            </div>
           </div>
           <section id="postgamePanel" class="postgame-panel hidden" aria-labelledby="postgameTitle">
             <div class="postgame-head">
@@ -202,7 +206,7 @@
       <li><strong>落子与提子</strong><span>气、提子、禁入点与简单劫遵循标准围棋规则。</span></li>
       <li><strong>中国式数子</strong><span>连续两次停一手后进入终局确认。标记双方认可的死子后，每个区域单独统计棋子数与围住的空点。</span></li>
       <li><strong>赢家通吃</strong><span>区域内总数领先的一方获得该区域全部分值；平局则双方各得一半。</span></li>
-      <li><strong>安全州开局</strong><span>启用后白方先选州，双方轮流选满安全州；之后黑白依次在各自选定区域各下一手，再进入自由对弈。</span></li>
+      <li><strong>安全州开局</strong><span>首次选州前，白方可要求换成黑方，每次换边令白方额外增加0.5分；开始选州后，双方轮流选满安全州并进行受限布子。</span></li>
     </ol>
     <button id="rulesGotIt" class="primary-button">明白了</button>
   </dialog>

@@ -23,13 +23,14 @@ export function parseMatchRecord(text) {
   if (!validSquare&&!validRectangle) throw new Error('棋盘尺寸无效');
   const nodes = record.regions.flatMap(region => Array.isArray(region.nodes) ? region.nodes : []);
   if (!record.regions.length || nodes.length !== nodeCount || new Set(nodes).size !== nodeCount || nodes.some(node => !Number.isInteger(node) || node < 0 || node >= nodeCount)) throw new Error('棋谱中的区域地图无效');
-  const supported = new Set(['select-safe','play','pass','mark-dead','resume','confirm','undo']);
+  const supported = new Set(['swap-sides','select-safe','play','pass','mark-dead','resume','confirm','undo']);
   if (record.events.some(event => !event || !supported.has(event.type))) throw new Error('棋谱中包含未知操作');
   return record;
 }
 
 export function applyMatchEvent(match, event) {
   switch (event.type) {
+    case 'swap-sides': return match.requestSideSwap(false);
     case 'select-safe': return match.selectSafeRegion(event.regionIndex, false);
     case 'play': return match.play(event.node, false);
     case 'pass': return match.pass(false);

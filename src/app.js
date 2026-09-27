@@ -229,7 +229,7 @@ function update() {
   ui.whiteScore.textContent = score.owners.reduce((n,c)=>n+(c===WHITE),0);
   ui.blackElectoral.textContent = score.blackTotal;
   ui.whiteElectoral.textContent = score.whiteTotal;
-  ui.totalPoints.textContent = `共 ${regions.reduce((n,r)=>n+r.points,0)} 分`;
+  ui.totalPoints.textContent = `共 ${regions.reduce((n,r)=>n+r.points,0)} 分${safeRule.whiteBonus?` · 白 +${safeRule.whiteBonus}`:''}`;
   ui.moveNumber.textContent = `第 ${game.history.length + 1} 手`;
   ui.blackPlayer.classList.toggle('active', gameStarted&&actor===BLACK&&![PHASES.REVIEW,PHASES.FINISHED].includes(safeRule.phase));
   ui.whitePlayer.classList.toggle('active', gameStarted&&actor===WHITE&&![PHASES.REVIEW,PHASES.FINISHED].includes(safeRule.phase));
@@ -270,6 +270,7 @@ function renderPostgameSummary(score){
   const summary=buildPostgameSummary(score,regions,countRegionalMoves(game,regions),safeRule.picks),colorName=color=>color===BLACK?'黑方':color===WHITE?'白方':'平局';
   ui.postgameLead.textContent=summary.winner===EMPTY?`双方 ${summary.blackTotal} 分，区域赛果平局`:`${colorName(summary.winner)}以 ${Math.max(summary.blackTotal,summary.whiteTotal)}:${Math.min(summary.blackTotal,summary.whiteTotal)} 获胜`;
   const metrics=[`黑 ${summary.blackWon} · 白 ${summary.whiteWon} · 平 ${summary.tied}`,`${summary.closeRegions} 个险胜州`,summary.safeTotal?`安全州守住 ${summary.safeHeld}/${summary.safeTotal}`:'未启用安全州',`${summary.highInvestmentLosses} 个高投入落败州`];
+  if(summary.whiteBonus)metrics.push(`换边补偿 · 白 +${summary.whiteBonus} 分`);
   ui.postgameMetrics.innerHTML=metrics.map(text=>`<span>${text}</span>`).join('');
   ui.postgameRegions.innerHTML=summary.rows.map(row=>{
     const result=row.winner===EMPTY?'平分':`${colorName(row.winner)} +${row.points}分`,efficiency=row.efficiency?`${row.efficiency.toFixed(2)} 分/胜方落子`:'—';
@@ -286,7 +287,7 @@ function currentReviewScore() { return safeRule.reviewScore(); }
 function currentDisplayScore() {
   if(finalScore)return finalScore;
   if([PHASES.REVIEW,PHASES.FINISHED].includes(safeRule.phase))return currentReviewScore();
-  return scoreRegions(game,regions,estimateLiveOwnership(game));
+  return safeRule.withWhiteBonus(scoreRegions(game,regions,estimateLiveOwnership(game)));
 }
 
 function toggleDeadGroup(node) {
@@ -311,6 +312,9 @@ function safePhaseMessage() {
 function updateSafePanel() {
   const names=color=>safeRule.picks[color].map(i=>regions[i]?.name).filter(Boolean).join('、')||'尚未选择';
   ui.blackSafeList.textContent=names(BLACK);ui.whiteSafeList.textContent=names(WHITE);
+  ui.swapOffer.classList.toggle('hidden',!safeRule.canSwapSides);
+  ui.swapBonusLabel.textContent=`白方额外分 ${safeRule.whiteBonus}`;
+  ui.swapSidesButton.disabled=Boolean(replayState)||aiBusy||!isHumanTurn();
   if(safeRule.phase==='draft'){
     const color=activeColor()===BLACK?'黑方':'白方';ui.safePhaseBadge.textContent='选州阶段';ui.safePhaseTitle.textContent=`${color}选择安全州`;ui.safePhaseMessage.textContent=`每方选择 ${safeRule.count} 州，白方优先且不可重复`;
   }else if(safeRule.phase==='opening'){
@@ -323,6 +327,17 @@ function selectSafeRegion(regionIndex) {
   const result=safeRule.selectSafeRegion(regionIndex);
   if(!result.ok)showMessage(result.reason);
   return result.ok;
+}
+
+function swapControllers() {
+  [controllers[BLACK],controllers[WHITE]]=[controllers[WHITE],controllers[BLACK]];
+}
+
+function requestSideSwap() {
+  const result=safeRule.requestSideSwap();
+  if(!result.ok){showMessage(result.reason);return false;}
+  swapControllers();
+  return true;
 }
 
 function chooseAiSafeRegion() {
@@ -342,8 +357,9 @@ function buildReplayPosition(index) {
   safeRule=new MatchState({game,regions,safeEnabled:Boolean(config.safeEnabled),safeCount:Number(config.safeCount)||0});
   safeRule.start();
   for(let i=0;i<index;i++){
-    const result=applyMatchEvent(safeRule,record.events[i]);
+    const event=record.events[i],result=applyMatchEvent(safeRule,event);
     if(!result.ok)throw new Error(`第 ${i+1} 步无法回放：${result.reason}`);
+    if(event.type==='swap-sides')swapControllers();
   }
   replayState.index=index;
   gameStarted=true; aiBusy=false; hoverNode=null;
@@ -441,7 +457,8 @@ function scheduleAiTurn(){
   setTimeout(async()=>{
     if(serial!==gameSerial)return;
     if(safeRule.phase==='draft'){
-      const choice=chooseAiSafeRegion();if(choice!==null)selectSafeRegion(choice);
+      if(safeRule.canSwapSides&&safeRule.whiteBonus<.5)requestSideSwap();
+      else { const choice=chooseAiSafeRegion();if(choice!==null)selectSafeRegion(choice); }
     }else{
       const available=availableSafeRegions(), allowed=safeRule.phase==='opening'?available.flatMap(regionIndex=>regions[regionIndex].nodes):null;
       const guidance=await requestKataGoGuidance(game,ui.aiLevel.value,allowed);
@@ -468,6 +485,7 @@ canvas.addEventListener('click',e=>{
   if(node!==null){const result=safeRule.play(node);if(result.ok){lastMove=node;update();scheduleAiTurn();}else showMessage(result.reason);}
 });
 ui.passButton.addEventListener('click',()=>{if(aiBusy||!isHumanTurn())return;const result=safeRule.pass();if(result.ok){lastMove=null;update();scheduleAiTurn();}else showMessage(result.reason);});
+ui.swapSidesButton.addEventListener('click',()=>{if(aiBusy||replayState||!isHumanTurn())return;if(requestSideSwap()){update();scheduleAiTurn();}});
 ui.undoButton.addEventListener('click',()=>{if(aiBusy||safeRule.phase===PHASES.FINISHED)return;const oneHuman=Object.values(controllers).filter(v=>v==='human').length===1;const count=safeRule.phase===PHASES.REVIEW?2:oneHuman&&isHumanTurn()?2:1;const result=safeRule.undo(count);if(result.ok){lastMove=null;update();scheduleAiTurn();}else showMessage(result.reason);});
 ui.resumeButton.addEventListener('click',()=>{const result=safeRule.resume();if(result.ok){update();scheduleAiTurn();}else showMessage(result.reason);});
 ui.confirmScoreButton.addEventListener('click',()=>{const result=safeRule.confirm();if(result.ok)update();else showMessage(result.reason);});
