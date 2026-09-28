@@ -5,6 +5,7 @@ import { createMatchRecord, appendMatchEvent, serializeMatchRecord, parseMatchRe
 import { kataGoStatus, requestKataGoGuidance } from './katago.js';
 import { lastMoveHighlightFrame } from './board-effects.js';
 import { buildPostgameSummary, countRegionalMoves } from './postgame.js';
+import { isHumanVsAi, shouldAiOfferSwap } from './controllers.js';
 
 const canvas = document.querySelector('#goBoard'), ctx = canvas.getContext('2d');
 const ui = Object.fromEntries([...document.querySelectorAll('[id]')].map(el => [el.id, el]));
@@ -456,8 +457,9 @@ function scheduleAiTurn(){
   aiBusy=true;ui.thinkingOverlay.classList.remove('hidden');update();
   setTimeout(async()=>{
     if(serial!==gameSerial)return;
+    let highlightAiMove=false;
     if(safeRule.phase==='draft'){
-      if(safeRule.canSwapSides&&safeRule.whiteBonus<.5)requestSideSwap();
+      if(safeRule.canSwapSides&&shouldAiOfferSwap(controllers,safeRule.whiteBonus))requestSideSwap();
       else { const choice=chooseAiSafeRegion();if(choice!==null)selectSafeRegion(choice); }
     }else{
       const available=availableSafeRegions(), allowed=safeRule.phase==='opening'?available.flatMap(regionIndex=>regions[regionIndex].nodes):null;
@@ -465,9 +467,9 @@ function scheduleAiTurn(){
       if(serial!==gameSerial)return;
       if(guidance)updateKataGoStatus();
       const node=chooseMove(game,regions,ui.aiLevel.value,allowed,Math.random,guidance);
-      if(node===null&&safeRule.phase==='play')safeRule.pass();else if(node!==null){const result=safeRule.play(node);if(result.ok)lastMove=node;}
+      if(node===null&&safeRule.phase==='play')safeRule.pass();else if(node!==null){const result=safeRule.play(node);if(result.ok){lastMove=node;highlightAiMove=isHumanVsAi(controllers);}}
     }
-    aiBusy=false;ui.thinkingOverlay.classList.add('hidden');update();scheduleAiTurn();
+    aiBusy=false;ui.thinkingOverlay.classList.add('hidden');update();if(highlightAiMove)animateLastMove();scheduleAiTurn();
   }, ui.aiLevel.value==='deep'?700:420);
 }
 

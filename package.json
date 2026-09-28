@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "start": "node server.mjs",
-    "test": "node tests/engine.test.mjs && node tests/tactics.test.mjs && node tests/tactical-benchmark.test.mjs && node tests/katago.test.mjs && node tests/board-effects.test.mjs && node tests/postgame.test.mjs && node tests/ai.test.mjs && node tests/match.test.mjs && node tests/flows.test.mjs && node tests/simulation.test.mjs",
+    "test": "node tests/engine.test.mjs && node tests/tactics.test.mjs && node tests/tactical-benchmark.test.mjs && node tests/katago.test.mjs && node tests/board-effects.test.mjs && node tests/controllers.test.mjs && node tests/postgame.test.mjs && node tests/ai.test.mjs && node tests/match.test.mjs && node tests/flows.test.mjs && node tests/simulation.test.mjs",
     "simulate": "node scripts/run-selfplay.mjs",
     "benchmark:ai": "node scripts/benchmark-ai.mjs",
     "diagnose:tactics": "node scripts/diagnose-tactics.mjs",
