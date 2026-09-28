@@ -3,7 +3,7 @@ import { chooseMove } from './ai.js';
 import { MatchState, PHASES } from './match.js';
 import { createMatchRecord, appendMatchEvent, serializeMatchRecord, parseMatchRecord, applyMatchEvent } from './record.js';
 import { kataGoStatus, requestKataGoGuidance } from './katago.js';
-import { lastMoveHighlightFrame } from './board-effects.js';
+import { lastMoveHighlightFrame, regionOverlayTitle } from './board-effects.js';
 import { buildPostgameSummary, countRegionalMoves } from './postgame.js';
 import { isHumanVsAi, shouldAiOfferSwap } from './controllers.js';
 
@@ -159,19 +159,22 @@ function animateLastMove(){
 }
 
 function drawRegionOverlays(originX,originY,step,canvasWidth,canvasHeight,score){
-  const fontSize=Math.max(8,Math.min(12,step*.2)), boxWidth=Math.max(42,Math.min(64,step*1.15)), boxHeight=fontSize*2.75;
+  const fontSize=Math.max(8,Math.min(12,step*.2)), nameFontSize=Math.max(7,Math.min(10,fontSize*.82)), boxHeight=fontSize*3.75;
   ctx.textAlign='center';ctx.textBaseline='middle';
   for(let regionIndex=0;regionIndex<score.details.length;regionIndex++){
     const region=score.details[regionIndex];
+    const safeOwner=safeOwnerOf(regionIndex),title=regionOverlayTitle(regionIndex,region.name);
+    ctx.font=`600 ${nameFontSize}px "Noto Serif SC", serif`;
+    const boxWidth=Math.max(58,Math.min(canvasWidth*.23,132,ctx.measureText(title).width+(safeOwner?25:16)));
     const center=region.nodes.reduce((sum,node)=>{const c=game.topology.coords(node);sum.x+=c.x;sum.y+=c.y;return sum;},{x:0,y:0});center.x/=region.nodes.length;center.y/=region.nodes.length;
     const anchor=region.nodes.reduce((best,node)=>{const c=game.topology.coords(node),d=(c.x-center.x)**2+(c.y-center.y)**2;return d<best.d?{node,d}:best;},{node:region.nodes[0],d:Infinity}).node;
     const c=game.topology.coords(anchor), x=Math.max(boxWidth/2+2,Math.min(canvasWidth-boxWidth/2-2,originX+c.x*step)), y=Math.max(boxHeight/2+2,Math.min(canvasHeight-boxHeight/2-2,originY+c.y*step));
     const whiteLead=region.winner===WHITE, tied=region.winner===EMPTY;
     ctx.fillStyle=whiteLead?'rgba(250,247,239,.92)':tied?'rgba(104,108,103,.88)':'rgba(18,24,22,.88)';ctx.beginPath();ctx.roundRect(x-boxWidth/2,y-boxHeight/2,boxWidth,boxHeight,4);ctx.fill();
     if(whiteLead){ctx.strokeStyle='rgba(65,67,63,.55)';ctx.lineWidth=1;ctx.stroke();}
-    ctx.fillStyle=whiteLead?'#18201d':'#fff';ctx.font=`600 ${fontSize}px "DM Mono", monospace`;ctx.fillText(`${region.points} 分`,x,y-fontSize*.55);
-    ctx.fillStyle=whiteLead?'#59615c':'#ddd5c8';ctx.font=`500 ${Math.max(7,fontSize*.78)}px "DM Mono", monospace`;ctx.fillText(`黑 ${region.black} · 白 ${region.white}`,x,y+fontSize*.65);
-    const safeOwner=safeOwnerOf(regionIndex);
+    ctx.fillStyle=whiteLead?'#18201d':'#fff';ctx.font=`600 ${nameFontSize}px "Noto Serif SC", serif`;ctx.fillText(title,x,y-fontSize*1.15);
+    ctx.font=`600 ${fontSize}px "DM Mono", monospace`;ctx.fillText(`${region.points} 分`,x,y);
+    ctx.fillStyle=whiteLead?'#59615c':'#ddd5c8';ctx.font=`500 ${Math.max(7,fontSize*.78)}px "DM Mono", monospace`;ctx.fillText(`黑 ${region.black} · 白 ${region.white}`,x,y+fontSize*1.12);
     if(safeOwner)drawShield(x+boxWidth/2-7,y-boxHeight/2+7,safeOwner,Math.max(4,fontSize*.48),whiteLead);
   }
   ctx.textAlign='start';ctx.textBaseline='alphabetic';
