@@ -23,8 +23,8 @@ function startGame(begin = true) {
   gameSerial++;
   gameStarted = begin;
   selectedSize = Number(document.querySelector('#sizeOptions .active').dataset.size);
-  selectedWidth=ui.regionPreset.value==='australia'?15:selectedSize;
-  selectedHeight=ui.regionPreset.value==='australia'?11:selectedSize;
+  selectedWidth=ui.regionPreset.value==='australia'?15:ui.regionPreset.value==='usa'?19:selectedSize;
+  selectedHeight=ui.regionPreset.value==='australia'?11:ui.regionPreset.value==='usa'?13:selectedSize;
   controllers = { [BLACK]: ui.blackController.value, [WHITE]: ui.whiteController.value };
   game = new GoGame(new GridTopology(selectedWidth,selectedHeight));
   if (ui.regionPreset.value === 'random') {
@@ -79,7 +79,7 @@ function configuredRegionCount() {
     const size=Number(document.querySelector('#sizeOptions .active').dataset.size), density=document.querySelector('#densityOptions .active').dataset.density;
     return recommendedRegionCounts(size)[density];
   }
-  return { three:3, four:4, center:5, australia:7 }[ui.regionPreset.value] || 5;
+  return { three:3, four:4, center:5, australia:7, usa:15 }[ui.regionPreset.value] || 5;
 }
 
 function updateSafeCountOptions() {
@@ -505,7 +505,7 @@ ui.replayPrev.addEventListener('click',()=>{stopReplay();setReplayIndex(replaySt
 ui.replayNext.addEventListener('click',()=>{stopReplay();setReplayIndex(replayState.index+1);});
 ui.replayPlay.addEventListener('click',toggleReplayPlayback);
 ui.replayExit.addEventListener('click',()=>{stopReplay();startGame(false);});
-function updateSizeControlState(){ui.sizeOptions.classList.toggle('is-disabled',ui.regionPreset.value==='australia');}
+function updateSizeControlState(){ui.sizeOptions.classList.toggle('is-disabled',['australia','usa'].includes(ui.regionPreset.value));}
 ui.regionPreset.addEventListener('change',()=>{ui.randomSettings.classList.toggle('hidden',ui.regionPreset.value!=='random');updateSizeControlState();updateSafeCountOptions();});
 ui.sizeOptions.addEventListener('click',e=>{if(!e.target.dataset.size)return;[...ui.sizeOptions.children].forEach(b=>b.classList.toggle('active',b===e.target));updateCountLabels();updateSafeCountOptions();});
 ui.densityOptions.addEventListener('click',e=>{const button=e.target.closest('button');if(!button)return;[...ui.densityOptions.children].forEach(b=>b.classList.toggle('active',b===button));updateSafeCountOptions();});

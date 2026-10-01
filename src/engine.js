@@ -130,6 +130,7 @@ export class GoGame {
 
 export function buildRegions(topology, preset = 'four') {
   if (preset === 'australia') return buildAustraliaRegions(topology);
+  if (preset === 'usa') return buildUsRegions(topology);
   const w = topology.width, h = topology.height;
   const specs = preset === 'three'
     ? [{ name: '西部州', points: 25, test: (x) => x < w / 3 }, { name: '中部州', points: 45, test: (x) => x >= w / 3 && x < 2*w/3 }, { name: '东部州', points: 30, test: (x) => x >= 2*w/3 }]
@@ -168,6 +169,46 @@ export function buildAustraliaRegions(topology = new GridTopology(15, 11)) {
     { code: 'E', name: '新南威尔士 NSW', points: 8 },
     { code: 'V', name: '维多利亚 VIC', points: 6 },
     { code: 'A', name: '首都领地 ACT', points: 1, safeSelectable: false }
+  ];
+  const byCode = new Map(specs.map((spec, index) => [spec.code, index]));
+  const regions = specs.map(({ code, ...spec }) => ({ ...spec, nodes: [] }));
+  layout.forEach((row, y) => [...row].forEach((code, x) => regions[byCode.get(code)].nodes.push(topology.index(x, y))));
+  return regions;
+}
+
+export function buildUsRegions(topology = new GridTopology(19, 13)) {
+  if (topology.width !== 19 || topology.height !== 13) throw new Error('美国预设需要 19×13 棋盘');
+  const layout = [
+    'CCCCCRRRRPUUUGGGYNN',
+    'CCCCCRRRPPUUUGGGYNN',
+    'CCCCRRRRPPUUUGGGYNN',
+    'CCCCRRRSPPUUUGGGYNN',
+    'CCCLLRSSPPPPUGGYYNN',
+    'CCLLLSSPPPPMGGAAYYN',
+    'LLLLSSPPPPMMGAAAVYY',
+    'LLLLSSSPTTMMMAAAVVY',
+    'LLLSSSSTTTMMMAADVVV',
+    'LLSSSSTTTTMMDDDDVVV',
+    'LSSSSTTTTTMDDDVVVFF',
+    'LSSSTTTTTTDDDVVFFFF',
+    'LSSSTTTTTTDDDFFFFFF'
+  ];
+  const specs = [
+    { code: 'C', name: '卡斯卡迪亚', points: 6 },
+    { code: 'L', name: '加利福尼亚', points: 10 },
+    { code: 'R', name: '北落基山', points: 3 },
+    { code: 'S', name: '西南', points: 6 },
+    { code: 'P', name: '大平原', points: 6 },
+    { code: 'T', name: '得克萨斯', points: 9 },
+    { code: 'U', name: '上中西部', points: 6 },
+    { code: 'G', name: '五大湖', points: 10 },
+    { code: 'M', name: '下密西西比', points: 5 },
+    { code: 'D', name: '深南部', points: 7 },
+    { code: 'F', name: '佛罗里达', points: 7 },
+    { code: 'A', name: '阿巴拉契亚', points: 5 },
+    { code: 'V', name: '中大西洋', points: 8 },
+    { code: 'Y', name: '纽约走廊', points: 7 },
+    { code: 'N', name: '新英格兰', points: 5 }
   ];
   const byCode = new Map(specs.map((spec, index) => [spec.code, index]));
   const regions = specs.map(({ code, ...spec }) => ({ ...spec, nodes: [] }));

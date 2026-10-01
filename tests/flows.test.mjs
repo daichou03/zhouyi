@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { GoGame, GridTopology, BLACK, WHITE, buildRegions, buildAustraliaRegions } from '../src/engine.js';
+import { GoGame, GridTopology, BLACK, WHITE, buildRegions, buildAustraliaRegions, buildUsRegions } from '../src/engine.js';
 import { MatchState, PHASES } from '../src/match.js';
 import { createMatchRecord, appendMatchEvent, serializeMatchRecord, parseMatchRecord, applyMatchEvent } from '../src/record.js';
 
@@ -61,5 +61,9 @@ const australiaMatch=new MatchState({game:australiaGame,regions:australiaRegions
 australiaMatch.start();
 const actIndex=australiaRegions.findIndex(region=>region.name.includes('ACT'));
 assert.equal(australiaMatch.selectSafeRegion(actIndex).ok,false,'ACT cannot be a safe state');
+
+const usGame=new GoGame(new GridTopology(19,13)),usRegions=buildUsRegions(usGame.topology);
+const usRecord=createMatchRecord({size:19,width:19,height:13,regionPreset:'usa',safeEnabled:true,safeCount:3,controllers:{[BLACK]:'human',[WHITE]:'human'}},usRegions);
+assert.equal(parseMatchRecord(serializeMatchRecord(usRecord)).regions.length,15);
 
 console.log('flow tests passed');

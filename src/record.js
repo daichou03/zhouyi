@@ -19,7 +19,7 @@ export function parseMatchRecord(text) {
   if (record?.format !== 'zhouyi-match' || record.version !== RECORD_VERSION) throw new Error('不支持的棋谱格式');
   if (!record.config || !Array.isArray(record.regions) || !Array.isArray(record.events)) throw new Error('棋谱内容不完整');
   const width=Number(record.config.width||record.config.size),height=Number(record.config.height||record.config.size),nodeCount=width*height;
-  const validSquare=width===height&&[9,13,19].includes(width),validRectangle=width===15&&height===11;
+  const validSquare=width===height&&[9,13,19].includes(width),validRectangle=(width===15&&height===11)||(width===19&&height===13);
   if (!validSquare&&!validRectangle) throw new Error('棋盘尺寸无效');
   const nodes = record.regions.flatMap(region => Array.isArray(region.nodes) ? region.nodes : []);
   if (!record.regions.length || nodes.length !== nodeCount || new Set(nodes).size !== nodeCount || nodes.some(node => !Number.isInteger(node) || node < 0 || node >= nodeCount)) throw new Error('棋谱中的区域地图无效');

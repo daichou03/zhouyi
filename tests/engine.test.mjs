@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { GoGame, GridTopology, BLACK, WHITE, buildRegions, buildAustraliaRegions, scoreRegions, generateRandomRegions, recommendedRegionCounts, recommendedSafeCount, estimateLiveOwnership } from '../src/engine.js';
+import { GoGame, GridTopology, BLACK, WHITE, buildRegions, buildAustraliaRegions, buildUsRegions, scoreRegions, generateRandomRegions, recommendedRegionCounts, recommendedSafeCount, estimateLiveOwnership } from '../src/engine.js';
 
 const game = new GoGame(new GridTopology(3));
 assert.equal(game.play(1), true);
@@ -60,6 +60,18 @@ assert.equal(australia.find(region=>region.name.includes('ACT')).safeSelectable,
 for(const region of australia){
   const allowed=new Set(region.nodes),seen=new Set(),stack=[region.nodes[0]];
   while(stack.length){const node=stack.pop();if(seen.has(node))continue;seen.add(node);for(const next of australiaTopology.neighbors(node))if(allowed.has(next))stack.push(next);}
+  assert.equal(seen.size,region.nodes.length,`${region.name} must be connected`);
+}
+
+const usTopology=new GridTopology(19,13),us=buildUsRegions(usTopology);
+assert.equal(us.length,15);
+assert.equal(us.reduce((sum,region)=>sum+region.nodes.length,0),247);
+assert.equal(new Set(us.flatMap(region=>region.nodes)).size,247);
+assert.equal(us.reduce((sum,region)=>sum+region.points,0),100);
+assert.equal(us.find(region=>region.name==='五大湖').points,10);
+for(const region of us){
+  const allowed=new Set(region.nodes),seen=new Set(),stack=[region.nodes[0]];
+  while(stack.length){const node=stack.pop();if(seen.has(node))continue;seen.add(node);for(const next of usTopology.neighbors(node))if(allowed.has(next))stack.push(next);}
   assert.equal(seen.size,region.nodes.length,`${region.name} must be connected`);
 }
 
