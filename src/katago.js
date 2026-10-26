@@ -1,6 +1,6 @@
 const visitsByLevel={fast:64,balanced:160,deep:400};
-import { analyzeUnconditionalLife, deadStonesFromOwnership } from './life.js';
-import { cloneWithHistory } from './browser-position.js';
+import { analyzeUnconditionalLife, deadStonesFromOwnership } from './life.js?v=8b7457d1d7688be4';
+import { cloneWithHistory } from './browser-position.js?v=8b7457d1d7688be4';
 let unavailableUntil=0;
 
 const columns='ABCDEFGHJKLMNOPQRSTUVWXYZ';

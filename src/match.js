@@ -1,4 +1,4 @@
-import { BLACK, WHITE, EMPTY, scoreRegions } from './engine.js';
+import { BLACK, WHITE, EMPTY, scoreRegions } from './engine.js?v=8b7457d1d7688be4';
 
 export const PHASES = Object.freeze({
   PREVIEW: 'preview',

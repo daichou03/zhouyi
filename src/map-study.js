@@ -1,5 +1,5 @@
-import { GridTopology, generateRandomRegions, recommendedRegionCounts } from './engine.js';
-import { analyzeMap } from './simulation.js';
+import { GridTopology, generateRandomRegions, recommendedRegionCounts } from './engine.js?v=8b7457d1d7688be4';
+import { analyzeMap } from './simulation.js?v=8b7457d1d7688be4';
 
 const mean=values=>values.length?values.reduce((sum,value)=>sum+value,0)/values.length:0;
 const rounded=(value,digits=3)=>Number(value.toFixed(digits));

@@ -1,4 +1,4 @@
-import { BLACK,WHITE,EMPTY } from './engine.js';
+import { BLACK,WHITE,EMPTY } from './engine.js?v=8b7457d1d7688be4';
 
 export function countRegionalMoves(game,regions){
   const byNode=new Int16Array(game.topology.nodeCount).fill(-1),counts=regions.map(()=>({[BLACK]:0,[WHITE]:0}));

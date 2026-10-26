@@ -1,6 +1,6 @@
-import { BLACK, WHITE, EMPTY, scoreRegions, estimateLiveOwnership } from './engine.js';
-import { groupSafetyBalance, isTrueEye, readGroupCapture, urgentMoveWeights } from './tactics.js';
-import { analyzeUnconditionalLife, isFutileInvasion } from './life.js';
+import { BLACK, WHITE, EMPTY, scoreRegions, estimateLiveOwnership } from './engine.js?v=8b7457d1d7688be4';
+import { groupSafetyBalance, isTrueEye, readGroupCapture, urgentMoveWeights } from './tactics.js?v=8b7457d1d7688be4';
+import { analyzeUnconditionalLife, isFutileInvasion } from './life.js?v=8b7457d1d7688be4';
 
 const SEARCH = {
   fast: { iterations: 20, candidates: 9, exploration: 1.18 },

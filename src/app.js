@@ -1,14 +1,14 @@
-import { GoGame, GridTopology, BLACK, WHITE, EMPTY, buildRegions, scoreRegions, generateRandomRegions, recommendedRegionCounts, recommendedSafeCount, estimateLiveOwnership } from './engine.js';
-import { chooseMove } from './ai.js';
-import { MatchState, PHASES } from './match.js';
-import { createMatchRecord, appendMatchEvent, serializeMatchRecord, parseMatchRecord, applyMatchEvent } from './record.js';
-import { kataGoStatus, requestKataGoGuidance, suggestDeadStones } from './katago.js';
-import { lastMoveHighlightFrame, regionOverlayTitle } from './board-effects.js';
-import { buildPostgameSummary, countRegionalMoves } from './postgame.js';
-import { isHumanVsAi, shouldAiOfferSwap } from './controllers.js';
-import { onLanguageChange, setLanguage, t, translateDocument } from './i18n/index.js';
-import { BrowserAi, supportsBrowserAi } from './browser-ai.js';
-import { cloneWithHistory } from './browser-position.js';
+import { GoGame, GridTopology, BLACK, WHITE, EMPTY, buildRegions, scoreRegions, generateRandomRegions, recommendedRegionCounts, recommendedSafeCount, estimateLiveOwnership } from './engine.js?v=8b7457d1d7688be4';
+import { chooseMove } from './ai.js?v=8b7457d1d7688be4';
+import { MatchState, PHASES } from './match.js?v=8b7457d1d7688be4';
+import { createMatchRecord, appendMatchEvent, serializeMatchRecord, parseMatchRecord, applyMatchEvent } from './record.js?v=8b7457d1d7688be4';
+import { kataGoStatus, requestKataGoGuidance, suggestDeadStones } from './katago.js?v=8b7457d1d7688be4';
+import { lastMoveHighlightFrame, regionOverlayTitle } from './board-effects.js?v=8b7457d1d7688be4';
+import { buildPostgameSummary, countRegionalMoves } from './postgame.js?v=8b7457d1d7688be4';
+import { isHumanVsAi, shouldAiOfferSwap } from './controllers.js?v=8b7457d1d7688be4';
+import { onLanguageChange, setLanguage, t, translateDocument } from './i18n/index.js?v=8b7457d1d7688be4';
+import { BrowserAi, supportsBrowserAi } from './browser-ai.js?v=8b7457d1d7688be4';
+import { cloneWithHistory } from './browser-position.js?v=8b7457d1d7688be4';
 
 const canvas = document.querySelector('#goBoard'), ctx = canvas.getContext('2d');
 const ui = Object.fromEntries([...document.querySelectorAll('[id]')].map(el => [el.id, el]));
@@ -576,7 +576,7 @@ ui.replayExit.addEventListener('click',()=>{stopReplay();startGame(false);});
 function updateSizeControlState(){
   const rectangular=['australia','usa'].includes(ui.regionPreset.value);
   ui.sizeOptions.classList.toggle('is-disabled',rectangular);
-  ui.aiEngine.querySelector('[value="browser"]').disabled=rectangular||Number(document.querySelector('#sizeOptions .active').dataset.size)!==9;
+  ui.aiEngine.querySelector('[value="browser"]').disabled=false;
 }
 ui.regionPreset.addEventListener('change',()=>{ui.randomSettings.classList.toggle('hidden',ui.regionPreset.value!=='random');updateSizeControlState();updateSafeCountOptions();});
 ui.sizeOptions.addEventListener('click',e=>{if(!e.target.dataset.size)return;[...ui.sizeOptions.children].forEach(b=>b.classList.toggle('active',b===e.target));updateCountLabels();updateSafeCountOptions();updateSizeControlState();});
@@ -590,8 +590,10 @@ window.addEventListener('resize',draw);
 document.querySelector('.language-switch').addEventListener('click',event=>{const button=event.target.closest('[data-language]');if(button)setLanguage(button.dataset.language);});
 onLanguageChange(()=>{updateCountLabels();updateSafeCountOptions();update();updateKataGoStatus();});
 if(new URL(location.href).searchParams.get('ai')==='browser'){
+  const params=new URL(location.href).searchParams,size=Number(params.get('size')||9);
   ui.aiEngine.value='browser';
-  [...ui.sizeOptions.children].forEach(button=>button.classList.toggle('active',Number(button.dataset.size)===9));
+  [...ui.sizeOptions.children].forEach(button=>button.classList.toggle('active',Number(button.dataset.size)===([9,13,19].includes(size)?size:9)));
+  if(['australia','usa'].includes(params.get('layout'))){ui.regionPreset.value=params.get('layout');ui.randomSettings.classList.add('hidden');}
 }
 translateDocument();
 updateCountLabels();

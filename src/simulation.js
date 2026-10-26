@@ -1,7 +1,7 @@
-import { GoGame, GridTopology, BLACK, WHITE, EMPTY, createSeededRandom, generateRandomRegions, recommendedRegionCounts, recommendedSafeCount, scoreRegions, estimateLiveOwnership } from './engine.js';
-import { chooseMove } from './ai.js';
-import { MatchState, PHASES } from './match.js';
-import { createMatchRecord, appendMatchEvent } from './record.js';
+import { GoGame, GridTopology, BLACK, WHITE, EMPTY, createSeededRandom, generateRandomRegions, recommendedRegionCounts, recommendedSafeCount, scoreRegions, estimateLiveOwnership } from './engine.js?v=8b7457d1d7688be4';
+import { chooseMove } from './ai.js?v=8b7457d1d7688be4';
+import { MatchState, PHASES } from './match.js?v=8b7457d1d7688be4';
+import { createMatchRecord, appendMatchEvent } from './record.js?v=8b7457d1d7688be4';
 
 const colorName = color => color === BLACK ? 'black' : color === WHITE ? 'white' : 'tie';
 const mean = values => values.length ? values.reduce((sum, value) => sum + value, 0) / values.length : 0;

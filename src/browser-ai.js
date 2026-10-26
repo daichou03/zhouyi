@@ -1,12 +1,12 @@
-import { browserPosition } from './browser-position.js';
+import { browserPosition } from './browser-position.js?v=8b7457d1d7688be4';
 
 const aborted=()=>Object.assign(new Error('Browser analysis cancelled'),{name:'AbortError'});
-export const supportsBrowserAi=topology=>topology.width===9&&topology.height===9;
+export const supportsBrowserAi=topology=>[[9,9],[13,13],[19,19],[15,11],[19,13]].some(([width,height])=>topology.width===width&&topology.height===height);
 
 // One worker/model per page; cancellation discards old results without reloading
 // a healthy model. No dependency on the native analysis API.
 export class BrowserAi {
-  constructor({workerFactory=()=>new Worker(new URL('../assets/browser-ai/worker.js',import.meta.url),{type:'module'}),loadTimeout=120000,analysisTimeout=15000,onState=()=>{}}={}){
+  constructor({workerFactory=()=>new Worker(new URL('../assets/browser-ai/worker.js?v=8b7457d1d7688be4',import.meta.url),{type:'module'}),loadTimeout=120000,analysisTimeout=15000,onState=()=>{}}={}){
     this.workerFactory=workerFactory;this.loadTimeout=loadTimeout;this.analysisTimeout=analysisTimeout;this.onState=onState;
     this.worker=null;this.pending=new Map();this.sequence=0;this.generation=0;this.loading=null;this.state={phase:'idle'};
   }
@@ -60,22 +60,23 @@ export class BrowserAi {
   }
   async retry(){this.dispose();return this.load();}
   async guidance(game,level='balanced',allowedNodes=null){
-    if(!supportsBrowserAi(game.topology))throw new Error('Browser AI supports 9x9 only');
+    if(!supportsBrowserAi(game.topology))throw new Error('Unsupported browser AI board dimensions');
     const generation=this.generation,position=browserPosition(game),allowed=allowedNodes?new Set(allowedNodes):null;
-    const legal=Array.from({length:81},(_,node)=>(!allowed||allowed.has(node))&&game.analyzeMove(node).legal);
+    const area=game.board.length;
+    const legal=Array.from({length:area},(_,node)=>(!allowed||allowed.has(node))&&game.analyzeMove(node).legal);
     await this.load();if(generation!==this.generation)throw aborted();
     let result;
     try{result=await this.request('evaluate',{position});}catch(error){if(error.name!=='AbortError'&&this.state.phase!=='error')this.fail(error);throw error;}
     if(generation!==this.generation)throw aborted();
-    if(!Array.isArray(result.policy)||result.policy.length!==82||!result.policy.every(value=>Number.isFinite(value)&&value>=0)||
-      !Array.isArray(result.ownership)||result.ownership.length!==81||!result.ownership.every(value=>Number.isFinite(value)&&Math.abs(value)<=1)){
+    if(!Array.isArray(result.policy)||result.policy.length!==area+1||!result.policy.every(value=>Number.isFinite(value)&&value>=0)||
+      !Array.isArray(result.ownership)||result.ownership.length!==area||!result.ownership.every(value=>Number.isFinite(value)&&Math.abs(value)<=1)){
       const error=new Error('Invalid browser model output');this.fail(error);throw error;
     }
-    const policy=result.policy.map((value,node)=>node===81?(allowed?0:value):legal[node]?value:0);
+    const policy=result.policy.map((value,node)=>node===area?(allowed?0:value):legal[node]?value:0);
     const sum=policy.reduce((a,b)=>a+b,0);
     if(sum<=0){const error=new Error('Browser policy has no legal probability');this.fail(error);throw error;}
-    for(let node=0;node<82;node++)policy[node]/=sum;
+    for(let node=0;node<policy.length;node++)policy[node]/=sum;
     const best=policy.indexOf(Math.max(...policy));
-    return {policy:policy.slice(0,81),passPolicy:policy[81],ownership:result.ownership,bestMove:best===81?'pass':'move',source:'browser-katago',backend:result.backend,milliseconds:result.milliseconds};
+    return {policy:policy.slice(0,area),passPolicy:policy[area],ownership:result.ownership,bestMove:best===area?'pass':'move',source:'browser-katago',backend:result.backend,milliseconds:result.milliseconds};
   }
 }

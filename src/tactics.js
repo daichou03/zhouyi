@@ -1,4 +1,4 @@
-import { BLACK, WHITE, EMPTY } from './engine.js';
+import { BLACK, WHITE, EMPTY } from './engine.js?v=8b7457d1d7688be4';
 
 const opponent=color=>color===BLACK?WHITE:BLACK;
 

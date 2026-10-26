@@ -1,4 +1,4 @@
-import { BLACK, WHITE, GoGame, GridTopology } from './engine.js';
+import { BLACK, WHITE, GoGame, GridTopology } from './engine.js?v=8b7457d1d7688be4';
 
 const colors={B:BLACK,W:WHITE};
 

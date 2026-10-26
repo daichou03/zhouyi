@@ -1,5 +1,5 @@
-import zhCN from './zh-CN.js';
-import en from './en.js';
+import zhCN from './zh-CN.js?v=8b7457d1d7688be4';
+import en from './en.js?v=8b7457d1d7688be4';
 
 const dictionaries = { 'zh-CN': zhCN, en };
 const storageKey = 'zhouyi.language';

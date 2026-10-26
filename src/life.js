@@ -1,5 +1,5 @@
-import { BLACK, WHITE, EMPTY } from './engine.js';
-import { listGroups } from './tactics.js';
+import { BLACK, WHITE, EMPTY } from './engine.js?v=8b7457d1d7688be4';
+import { listGroups } from './tactics.js?v=8b7457d1d7688be4';
 
 // Benson-style sufficient test for unconditional life. Unknown is not dead.
 export function analyzeUnconditionalLife(game) {

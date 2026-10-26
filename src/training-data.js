@@ -1,6 +1,6 @@
-import { GoGame, GridTopology, BLACK, WHITE } from './engine.js';
-import { MatchState, PHASES } from './match.js';
-import { applyMatchEvent } from './record.js';
+import { GoGame, GridTopology, BLACK, WHITE } from './engine.js?v=8b7457d1d7688be4';
+import { MatchState, PHASES } from './match.js?v=8b7457d1d7688be4';
+import { applyMatchEvent } from './record.js?v=8b7457d1d7688be4';
 
 // Versioned, lossless positions. Region IDs are labels, not ordinal features.
 export function extractTrainingSamples(result, { split, gameId }) {
