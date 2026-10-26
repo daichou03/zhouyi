@@ -1,0 +1,1 @@
+Electoral Go browser AI uses TensorFlow.js (Apache-2.0), Web KaTrain code (MIT) and KataGo model weights (MIT). Model: b10c128-s1141046784-d204142634; SHA-256: 3d8a24697ba25fe4da39af4c2b6bd405907b0ad8295322f5a550fa2d8fe4a2f4
